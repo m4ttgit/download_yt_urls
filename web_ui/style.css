@@ -1,0 +1,135 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #121212;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: #1e1e1e;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  max-width: 600px;
+  width: 90%;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.8em;
+  color: #ffffff;
+}
+
+p {
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #cccccc;
+}
+
+.output-dir-container {
+  display: flex;
+  gap: 10px;
+}
+
+.output-dir-container input[type="text"] {
+  display: none;
+}
+
+.output-dir-container button {
+  padding: 10px 16px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.output-dir-container button:hover {
+  background-color: #005fa3;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #0078d4;
+  outline: none;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  background: #2c2c2c;
+  border-radius: 8px;
+  min-height: 60px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  color: #e0e0e0;
+}
+
+.output-option {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+}
+
+.output-option label {
+  font-weight: normal;
+  color: #cccccc;
+}
+
+.bmc-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: #FFDD00;
+  color: #000;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.bmc-link:hover {
+  background-color: #e6c200;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YouTube Channel Video List Downloader - Save or Download YouTube Video URLs</title>
+<meta name="description" content="Download or save YouTube channel video URLs easily as CSV files. Choose to save to your folder or download directly. Fast, simple, privacy-friendly.">
+<meta name="keywords" content="YouTube downloader, video URL extractor, save YouTube URLs, download CSV, YouTube channel videos, YouTube video list, YouTube scraper">
+<meta name="author" content="Jollyday">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="YouTube Channel Video List Downloader">
+<meta property="og:description" content="Download or save YouTube channel video URLs easily as CSV files. Choose to save to your folder or download directly.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="">
+<meta property="og:image" content="">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>YouTube Channel Video List Downloader</h1>
+  </header>
+  <main>
+    <p>
+      Enter a YouTube channel URL, select an output directory, and choose whether to save the CSV file or download it directly.
+    </p>
+
+    <label for="channelUrl">YouTube Channel URL:</label>
+    <input
+      type="text"
+      id="channelUrl"
+      placeholder="e.g., https://www.youtube.com/@datasciencecentral"
+    />
+
+    <label for="outputDir">Output Directory Path:</label>
+    <div class="output-dir-container">
+      <input
+        type="text"
+        id="outputDir"
+        placeholder="e.g., D:\Downloads\YouTubeChannels"
+      />
+      <button type="button" id="browseBtn">📁 Browse</button>
+    </div>
+
+    <label>Output Option:</label>
+    <div class="output-option">
+      <label><input type="radio" name="outputOption" value="save" checked> Save to Folder</label>
+      <label><input type="radio" name="outputOption" value="download"> Download File</label>
+    </div>
+
+    <button id="downloadBtn">🚀 Get Video List</button>
+
+    <div id="result" class="result" readonly></div>
+
+    <a id="downloadCsvBtn" href="#" style="display: none" download>
+      <button type="button">⬇️ Download CSV</button>
+    </a>
+
+    <div style="margin-top:20px;"></div>
+<a href="https://buymeacoffee.com/jollyday" target="_blank" class="bmc-link">☕ Buy me a coffee</a>
+
+<footer style="font-size: 0.8em; color: #aaa; margin-top: 30px; text-align: center;">
+      Disclaimer: This tool is not affiliated with YouTube or Google. It is the user's responsibility to ensure that they have the right to download content. Downloading copyrighted material without permission may violate YouTube's Terms of Service and applicable laws. This service is intended for personal and fair-use purposes only.
+      <br><br>
+      <a href="terms.html" style="color:#FFDD00;">Terms of Service</a>
+    </footer>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

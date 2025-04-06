@@ -1,12 +1,12 @@
-import gradio as gr
-import subprocess
-import csv
 import os
 import re
-import tempfile
-import tkinter as tk
-from tkinter import filedialog
+import csv
 import sys
+import subprocess
+import tempfile
+from flask import Flask, request, jsonify, send_file, send_from_directory
+
+app = Flask(__name__, static_folder='web_ui', static_url_path='')
 
 def extract_channel_name(url):
     patterns = [
@@ -44,7 +44,7 @@ def get_videos_and_save(channel_url, output_dir, output_option):
     if not channel_url:
         return "Error: Please provide a Channel URL.", None
 
-    if output_option == "Save to Folder" and not output_dir:
+    if output_option == "save" and not output_dir:
         return "Error: Please provide an Output Directory.", None
 
     if not re.match(r"https?://(www\.)?youtube\.com/", channel_url, re.IGNORECASE):
@@ -54,7 +54,7 @@ def get_videos_and_save(channel_url, output_dir, output_option):
     if not channel_name:
         return f"Error: Could not extract a usable channel name from the URL: {channel_url}", None
 
-    if output_option == "Save to Folder":
+    if output_option == "save":
         save_folder = os.path.join(output_dir, channel_name)
     else:
         save_folder = tempfile.mkdtemp()
@@ -123,10 +123,10 @@ def get_videos_and_save(channel_url, output_dir, output_option):
         except Exception as e:
             return f"An unexpected error occurred during CSV writing: {e}", None
 
-        if output_option == "Save to Folder":
+        if output_option == "save":
             return f"Success! {len(video_data)} videos saved to: {csv_filepath}", None
         else:
-            return f"Success! {len(video_data)} videos processed. Click below to download CSV.", csv_filepath
+            return f"Success! {len(video_data)} videos processed.", csv_filepath
 
     except FileNotFoundError:
         return "Error: 'yt-dlp' command not found. Make sure yt-dlp is installed and in your system's PATH.", None
@@ -137,7 +137,31 @@ def get_videos_and_save(channel_url, output_dir, output_option):
         print(f"Unexpected error during subprocess execution: {traceback.format_exc()}")
         return f"An unexpected error occurred during processing: {e}", None
 
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/download', methods=['POST'])
+def download():
+    data = request.get_json()
+    channel_url = data.get('channel_url')
+    output_dir = data.get('output_dir')
+    output_option = data.get('output_option', 'save')  # default to save
+
+    message, csv_path = get_videos_and_save(channel_url, output_dir, output_option)
+
+    if output_option == "download" and csv_path and os.path.exists(csv_path):
+        try:
+            return send_file(csv_path, as_attachment=True)
+        except Exception as e:
+            return jsonify({'message': f"Error sending file: {e}"})
+    else:
+        return jsonify({'message': message})
+
+@app.route('/select_folder', methods=['GET'])
 def select_folder():
+    import tkinter as tk
+    from tkinter import filedialog
     try:
         root = tk.Tk()
         root.withdraw()
@@ -145,55 +169,24 @@ def select_folder():
         folder_path = filedialog.askdirectory(title="Select Output Folder")
         root.destroy()
         if folder_path:
-            return folder_path
+            return jsonify({'path': folder_path})
         else:
-            return gr.update()
+            return jsonify({'path': ''})
     except Exception as e:
         print(f"Error opening folder dialog: {e}")
-        return gr.update()
+        return jsonify({'path': ''})
 
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# YouTube Channel Video List Downloader")
-    gr.Markdown(
-        "Enter a YouTube channel URL and choose whether to save the CSV file to a folder or download it directly."
-    )
+from flask import send_file, request as flask_request
 
-    with gr.Row():
-        channel_input = gr.Textbox(
-            label="YouTube Channel URL",
-            placeholder="e.g., https://www.youtube.com/@datasciencecentral"
-        )
+@app.route('/download_csv')
+def download_csv():
+    csv_path = flask_request.args.get('path')
+    if not csv_path or not os.path.isfile(csv_path):
+        return "File not found", 404
+    try:
+        return send_file(csv_path, as_attachment=True)
+    except Exception as e:
+        return f"Error sending file: {e}", 500
 
-    with gr.Row():
-        output_dir_input = gr.Textbox(
-            label="Output Directory Path (used only if saving to folder)",
-            placeholder="Select or type the path",
-            interactive=True
-        )
-        browse_button = gr.Button("📁 Browse Folder")
-
-    output_option = gr.Radio(
-        ["Save to Folder", "Download File"],
-        value="Save to Folder",
-        label="Output Option"
-    )
-
-    submit_button = gr.Button("🚀 Get Video List", variant="primary")
-
-    output_message = gr.Textbox(label="Result", interactive=False)
-    download_file = gr.File(label="Download CSV File")
-
-    browse_button.click(
-        fn=select_folder,
-        inputs=None,
-        outputs=output_dir_input
-    )
-
-    submit_button.click(
-        fn=get_videos_and_save,
-        inputs=[channel_input, output_dir_input, output_option],
-        outputs=[output_message, download_file]
-    )
-
-if __name__ == "__main__":
-    demo.launch(share=False)
+if __name__ == '__main__':
+    app.run(debug=True)
